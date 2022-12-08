@@ -9,6 +9,7 @@
 
 from PIL import Image, ImageDraw, ImageFont
 import sys
+import copy
 
 CHARACTER_WIDTH=14
 CHARACTER_HEIGHT=25
@@ -46,16 +47,113 @@ test_letters = load_letters(test_img_fname)
 # Each training letter is now stored as a list of characters, where black
 #  dots are represented by *'s and white dots are spaces. For example,
 #  here's what "a" looks like:
-print("\n".join([ r for r in train_letters['a'] ]))
+#print("\n".join([ r for r in train_letters['a'] ]))
 
 # Same with test letters. Here's what the third letter of the test data
 #  looks like:
-print("\n".join([ r for r in test_letters[2] ]))
+#print("\n".join([ r for r in test_letters[2] ]))
 
+numbers = '0123456789'
+numbers_dict = {}
+symbols='(),.-!?\"\' '
+symbols_dict = {}
+final_result=['']*len(test_letters)
+max_value=0
+final_chars = {}
+simple_final = {}
 
+def find_symbols(i):
+    if i not in symbols_dict.keys():
+        symbols_dict[i]=dict()
+        for j in simple_final[i].copy():
+            if j in symbols:
+                symbols_dict[i][j]=simple_final[i][j]
+                del simple_final[i][j]
+    
+def find_numbers(i):
+        if i not in numbers_dict.keys():
+            numbers_dict[i]=dict()
+        for j in simple_final[i].copy():
+            if j in numbers:
+                numbers_dict[i][j]=simple_final[i][j]
+                del simple_final[i][j]
+
+def find_chars():
+    for i in simple_final.keys():
+        max_val=0
+        max_key=''
+        max_symbol_key=''
+        max_symbol_val=0
+        max_number_key=''
+        max_number_val=0
+        
+        find_symbols(i)
+        find_numbers(i)      
+        
+        for j in simple_final[i].keys():
+            if simple_final[i][j]>max_val:
+                max_key=j
+                max_val=simple_final[i][j]
+        
+        for j in numbers_dict[i].keys():
+            if max_number_val<numbers_dict[i][j]:
+                max_number_key=j
+                max_number_val=numbers_dict[i][j]
+        
+        for j in symbols_dict[i].keys():
+            if max_symbol_val<symbols_dict[i][j]:
+                max_symbol_key=j
+                max_symbol_val=symbols_dict[i][j]
+
+        
+        if max_symbol_val-max_val>=0.07:
+            final_result[i]=max_symbol_key
+        else:
+            final_result[i]=max_key
+
+        if max_number_val-max_val>=0.02:
+            final_result[i]=max_symbol_key
+        else:
+            final_result[i]=max_key
+        
+
+def find_pattern(test_row, train_row,final_chars,i,j):
+    for row in range(len(test_row)):
+            for pixel in range(len(test_row[row])):
+                if test_row[row][pixel]==train_row[row][pixel]:
+                    if train_row[row][pixel]==' ':
+                        if ' ' in final_chars[i][j].keys():
+                            final_chars[i][j][' ']+=1
+                        else:
+                            final_chars[i][j][' ']=1 
+                             
+                    elif train_row[row][pixel]=='*':
+
+                        if '*' in final_chars[i][j].keys():
+                            final_chars[i][j]['*']+=1
+                        else:
+                            final_chars[i][j]['*']=1
+                            
+for itr in range(0,len(test_letters),1):
+    if itr not in final_chars:
+        final_chars[itr] = {}
+    for i in train_letters:
+        if i not in final_chars:
+            final_chars[itr][i] ={}
+        find_pattern(test_letters[itr],train_letters[i],final_chars, itr,i)
+simple_final = copy.deepcopy(final_chars)
+        
+for i in simple_final.keys():
+    for j in simple_final[i].keys():
+        final_sum=sum(simple_final[i][j].values())
+        simple_final[i][j]=final_sum/400
+
+find_chars()
+
+final_result=''.join(final_result)
 
 # The final two lines of your output should look something like this:
-print("Simple: " + "Sample s1mple resu1t")
+print("Simple: " + final_result)
 print("   HMM: " + "Sample simple result") 
 
 
