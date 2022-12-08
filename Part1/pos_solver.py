@@ -14,7 +14,7 @@ import math
 # We've set up a suggested code structure, but feel free to change it. Just
 # make sure your code still works with the label.py and pos_scorer.py code
 # that we've supplied.
-#
+
 class Solver:
     # Calculate the log of the posterior probability of a given sentence
     #  with a given part-of-speech labeling. Right now just returns -999 -- fix this!
@@ -41,7 +41,6 @@ class Solver:
             print("Unknown algo!")
 
     # Do the training!
-    #
    
     def train(self, data):
         words=0
@@ -103,12 +102,12 @@ class Solver:
         # print(self.frequencies)
         self.transition_prob = transition_prob 
     def find_pos(self,word):
-        if (list(word)[-3:] == list("ing") or list(word)[-2:] == list("ed") or list(word)[-3:] == list("ify")) :
+        if (list(word)[-2:] == list("ed") or  list(word)[-3:] == list("ify") or list(word)[-3:] == list("ing") ) :
             return "verb"
 
-        elif (list(word)[-4:] == list("like") or list(word)[-4:] == list("less") or list(word)[-4:] == list("able")
-            or list(word)[-3:] == list("ful") or list(word)[-3:] == list("ous")or list(word)[-3:] == list("ish") or
-            list(word)[-2:] == list("ic") or list(word)[-3:] == list("ive")):
+        elif (list(word)[-4:] == list("less") or list(word)[-4:] == list("like") or  list(word)[-4:] == list("able")
+            or list(word)[-3:] == list("ful") or
+            list(word)[-2:] == list("ic") or list(word)[-3:] == list("ish") or list(word)[-3:] == list("ive")or list(word)[-3:] == list("ous")):
             return "adj"
 
         elif (list(word)[-2:] == list("ly") ):
