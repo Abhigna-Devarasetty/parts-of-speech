@@ -1,0 +1,4 @@
+part1_result_3_0,0. Ground truth:      100.00%              1
+part1_result_3_1,      1. Simple:       49.20%               
+part1_result_3_2,         2. HMM:       70.48%               
+part1_result_3_3,     3. Complex:       20.56%               
