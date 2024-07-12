@@ -1,4 +1,4 @@
-# Part-1 - Parts of Speech Tagging
+# Part-1 -- Parts of Speech Tagging
 
 ## Simplified Bayes Net
 
